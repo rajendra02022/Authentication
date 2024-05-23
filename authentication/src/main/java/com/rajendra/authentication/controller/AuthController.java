@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import com.rajendra.authentication.dto.LoginRequest;
 import com.rajendra.authentication.dto.RegisterRequest;
 import com.rajendra.authentication.dto.AuthResponse;
+import com.rajendra.authentication.dto.ProfileDTO;
+import com.rajendra.authentication.entity.Profile;
 import com.rajendra.authentication.service.AuthService;
 
   
@@ -73,19 +75,38 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse("User registered successfully", null));
     }
 
-@Operation(summary = "Get authenticated user details")
-@ApiResponse(responseCode = "200", description = "User details retrieved successfully", content = @Content(schema = @Schema(implementation = User.class)))
-@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
-@GetMapping("/profile")
-public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String token) {
-    if (token != null && token.startsWith("Bearer ")) {
-        token = token.substring(7);
-        if (authService.validateToken(token)) {
-            String username = authService.getUsernameFromToken(token);
-            User user = authService.getUserByUsername(username);
-            return ResponseEntity.ok(user);
+    @Operation(summary = "Update authenticated user profile")
+    @ApiResponse(responseCode = "200", description = "User profile updated successfully", content = @Content(schema = @Schema(implementation = Profile.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @PutMapping("/profile")
+    public ResponseEntity<Profile> updateUserProfile(@RequestHeader("Authorization") String token, @Valid @RequestBody ProfileDTO updatedProfileDTO) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+            if (authService.validateToken(token)) {
+                String username = authService.getUsernameFromToken(token);
+                Profile profile = authService.updateUserProfile(username, updatedProfileDTO);
+                return ResponseEntity.ok(profile);
+            }
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+    @Operation(summary = "Get authenticated user profile")
+    @ApiResponse(responseCode = "200", description = "User profile retrieved successfully", content = @Content(schema = @Schema(implementation = Profile.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    @GetMapping("/profile")
+    public ResponseEntity<Profile> getUserProfile(@RequestHeader("Authorization") String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+            if (authService.validateToken(token)) {
+                String username = authService.getUsernameFromToken(token);
+                User user = authService.getUserByUsername(username);
+                Profile profile = authService.getProfileByUserId(user.getId());
+                return ResponseEntity.ok(profile);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 }
-}
+
+

@@ -21,3 +21,8 @@ INSERT INTO user_roles (user_id, role_id) VALUES (1, 1); -- admin -> ADMIN
 INSERT INTO user_roles (user_id, role_id) VALUES (2, 2); -- user -> USER
 INSERT INTO user_roles (user_id, role_id) VALUES (3, 3); -- manager -> MANAGER
 -- Add more user-role mappings as needed
+
+-- Insert initial data into the profiles table
+INSERT INTO profiles (first_name, last_name, phone_number, address, user_id) VALUES ('Admin', 'User', '1234567890', '123 Admin St', 1);
+INSERT INTO profiles (first_name, last_name, phone_number, address, user_id) VALUES ('Regular', 'User', '0987654321', '456 User Ave', 2);
+-- Add more profiles as needed
