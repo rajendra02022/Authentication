@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class JwtProvider {
@@ -19,6 +21,7 @@ public class JwtProvider {
     private String jwtSecret;
     private final int jwtExpirationMs = 86400000;
     private final CustomUserDetailsService userDetailsService;
+    private Set<String> invalidatedTokens = ConcurrentHashMap.newKeySet();
 
     public JwtProvider(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -53,5 +56,14 @@ public class JwtProvider {
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return claims.getSubject();
     }
+
+    public void invalidateToken(String token) {
+        invalidatedTokens.add(token);
+    }
+
+    public boolean isTokenInvalidated(String token) {
+        return invalidatedTokens.contains(token);
+    }
 }
+
  

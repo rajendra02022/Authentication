@@ -26,3 +26,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     user_id BIGINT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS invalidated_tokens (
+    token VARCHAR(255) PRIMARY KEY
+);

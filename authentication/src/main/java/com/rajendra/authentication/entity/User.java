@@ -39,7 +39,7 @@ public class User implements Serializable {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_roles",
         joinColumns = @JoinColumn(name = "user_id"),

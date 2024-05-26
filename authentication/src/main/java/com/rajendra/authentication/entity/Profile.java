@@ -32,7 +32,7 @@ public class Profile {
     @Column(name = "address")
     private String address;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

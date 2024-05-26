@@ -107,6 +107,17 @@ public class AuthController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+            authService.invalidateToken(token);
+            return ResponseEntity.ok("Logged out successfully");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token");
+    }
 }
+
 
 
